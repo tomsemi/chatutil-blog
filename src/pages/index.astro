@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { formatDate, getAllTags, getNotes, getReadingMinutes } from "../lib/notes";
+
+const notes = await getNotes();
+const tags = getAllTags(notes);
+---
+
+<BaseLayout>
+  <main class="site-shell">
+    <section class="intro">
+      <div>
+        <p class="eyebrow">Personal learning archive</p>
+        <h1>Notes for building, learning, and shipping small software products.</h1>
+        <p class="intro-copy">
+          这里放一些平时学习总结、技术踩坑、产品思考和开发记录。内容不追求完整教程，
+          重点是把自己真正遇到的问题和判断留下来。
+        </p>
+      </div>
+
+      <aside class="notebook-card" aria-label="Notebook motif">
+        <div class="notebook-lines">
+          <p>Swift / Cloudflare / AI / Product</p>
+          <p>Keep the details close.</p>
+          <p>Write before memory fades.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section-head">
+      <h2>Latest Notes</h2>
+      <div class="tag-row" aria-label="Popular tags">
+        {tags.slice(0, 6).map(({ tag, count }) => (
+          <a class="tag" href={`/tags/${tag}/`}>{tag} {count}</a>
+        ))}
+      </div>
+    </section>
+
+    <section class="note-list" aria-label="Notes">
+      {notes.length === 0 ? (
+        <p class="empty-state">No notes yet. Add Markdown files under <code>src/content/notes</code>.</p>
+      ) : (
+        notes.map((note) => (
+          <a class="note-card" href={`/notes/${note.slug}/`}>
+            <div class="note-meta">
+              <div>{formatDate(note.data.date)}</div>
+              <div>{getReadingMinutes(note.body)} min read</div>
+            </div>
+            <article>
+              <h2>{note.data.title}</h2>
+              <p>{note.data.description}</p>
+              <div class="tag-row">
+                {note.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+              </div>
+            </article>
+          </a>
+        ))
+      )}
+    </section>
+  </main>
+</BaseLayout>

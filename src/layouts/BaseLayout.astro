@@ -1,0 +1,77 @@
+---
+import "../styles/global.css";
+
+type Props = {
+  title?: string;
+  description?: string;
+  canonical?: string;
+};
+
+const {
+  title = "ChatUtil Blog",
+  description = "Learning notes, technical summaries, and build logs from ChatUtil.",
+  canonical = Astro.url.href,
+} = Astro.props;
+
+const pageTitle = title === "ChatUtil Blog" ? title : `${title} | ChatUtil Blog`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="ChatUtil Blog RSS" href="/rss.xml" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="ChatUtil Blog home">
+          <span class="brand-mark">C</span>
+          <span class="brand-text">ChatUtil Blog</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/">Notes</a>
+          <a href="/tags/">Tags</a>
+          <a href="/rss.xml">RSS</a>
+          <a href="https://chatutil.top/">ChatUtil</a>
+        </nav>
+      </header>
+    </div>
+
+    <slot />
+
+    <div class="site-shell">
+      <footer class="site-footer">
+        <span>ChatUtil Blog. Learning notes, experiments, and build logs.</span>
+        <span class="footer-divider">/</span>
+        <span data-pv-count>PV --</span>
+      </footer>
+    </div>
+
+    <script is:inline>
+      const marker = document.querySelector("[data-pv-count]");
+
+      if (marker) {
+        fetch(`/api/pv?path=${encodeURIComponent(window.location.pathname)}`)
+          .then((response) => (response.ok ? response.json() : null))
+          .then((data) => {
+            if (data && typeof data.views === "number") {
+              marker.textContent = `PV ${data.views}`;
+            }
+          })
+          .catch(() => {
+            marker.textContent = "PV --";
+          });
+      }
+    </script>
+  </body>
+</html>

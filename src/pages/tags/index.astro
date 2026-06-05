@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllTags, getNotes } from "../../lib/notes";
+
+const tags = getAllTags(await getNotes());
+---
+
+<BaseLayout title="Tags" description="Browse ChatUtil Blog notes by tag.">
+  <main class="site-shell">
+    <section class="intro">
+      <div>
+        <p class="eyebrow">Index</p>
+        <h1>Tags</h1>
+        <p class="intro-copy">按主题浏览学习总结和开发记录。</p>
+      </div>
+    </section>
+
+    <section class="note-list" aria-label="Tags">
+      {tags.map(({ tag, count }) => (
+        <a class="note-card" href={`/tags/${tag}/`}>
+          <div class="note-meta">{count} notes</div>
+          <article>
+            <h2>{tag}</h2>
+          </article>
+        </a>
+      ))}
+    </section>
+  </main>
+</BaseLayout>
