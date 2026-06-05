@@ -58,18 +58,22 @@ const pageTitle = title === "ChatUtil Blog" ? title : `${title} | ChatUtil Blog`
     </div>
 
     <script is:inline>
-      const marker = document.querySelector("[data-pv-count]");
+      const markers = Array.from(document.querySelectorAll("[data-pv-count]"));
 
-      if (marker) {
+      if (markers.length > 0) {
         fetch(`/api/pv?path=${encodeURIComponent(window.location.pathname)}`)
           .then((response) => (response.ok ? response.json() : null))
           .then((data) => {
             if (data && typeof data.views === "number") {
-              marker.textContent = `PV ${data.views}`;
+              markers.forEach((marker) => {
+                marker.textContent = `PV ${data.views}`;
+              });
             }
           })
           .catch(() => {
-            marker.textContent = "PV --";
+            markers.forEach((marker) => {
+              marker.textContent = "PV --";
+            });
           });
       }
     </script>
